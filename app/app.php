@@ -16,6 +16,8 @@ $app->get('/', function () use ($app) {
     return $app->render('index.php');
 });
 
-// ...
+$app->get('/index', function () use ($app) {
+    return $app->render('index.php');
+});
 
 return $app;
