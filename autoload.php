@@ -22,7 +22,8 @@ $autoload = function($className) use ($autoload_map, $cache_file) {
     searchFile(__DIR__, $className);
 };
 
-function searchFile($directory, $className) {
+function searchFile($directory, $className)
+{
     $className = ltrim($className, '\\');
     $classNameSave = $className;
     $directory_not_allowed = array(
@@ -45,7 +46,8 @@ function searchFile($directory, $className) {
 }
 
 
-function loadFile($directory, $directory_not_allowed, $file, $classNameSave) {
+function loadFile($directory, $directory_not_allowed, $file, $classNameSave)
+{
     $open_directory = opendir($directory);
     while (false !== ($entry = readdir($open_directory))) {
         if (is_dir($directory . DIRECTORY_SEPARATOR . $entry) && !in_array($entry, $directory_not_allowed)) {
@@ -62,7 +64,8 @@ function loadFile($directory, $directory_not_allowed, $file, $classNameSave) {
     closedir($open_directory);
 }
 
-function addFileToCache($className, $file) {
+function addFileToCache($className, $file)
+{
     global $cache_map, $cache_file;
     if (!$cache_map) {
         $cache_map = array();
