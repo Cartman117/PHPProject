@@ -10,7 +10,7 @@ class Status
     private $date;
     private $clientUsed;
 
-    public function __construct($content, $id, $userId, $date, $clientUsed)
+    public function __construct($content, $id, $userId, $date, $clientUsed = null)
     {
         $this->content      = $content;
         $this->id           = $id;
@@ -42,5 +42,10 @@ class Status
     public function getClientUsed()
     {
         return $this->clientUsed;
+    }
+
+    public function __toString()
+    {
+        return '<div class="status">User : ' . $this->userId . '  Date : ' . $this->date . '<br/>' . $this->content . '</div><br/>';
     }
 }
