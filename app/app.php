@@ -2,6 +2,8 @@
 
 require __DIR__ . '/../autoload.php';
 
+use Model\InMemoryFinder;
+
 // Config
 $debug = true;
 
@@ -18,6 +20,18 @@ $app->get('/', function () use ($app) {
 
 $app->get('/index', function () use ($app) {
     return $app->render('index.php');
+});
+
+$app->get('/statuses', function () use ($app) {
+    $memoryFinder = new InMemoryFinder();
+    $statuses = $memoryFinder->findAll();
+    return $app->render('statuses.php', array('array' => $statuses));
+});
+
+$app->get('/statuses/(\d+)', function ($id) use ($app) {
+    $memoryFinder = new InMemoryFinder();
+    $status = $memoryFinder->findOneById($id);
+    return $app->render('status.php', array('item' => $status));
 });
 
 return $app;
