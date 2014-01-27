@@ -71,7 +71,26 @@ class App
         return $this;
     }
 
-    // Something is missing here...
+    public function post($pattern, $callable)
+    {
+        $this->registerRoute(self::POST, $pattern, $callable);
+
+        return $this;
+    }
+
+    public function put($pattern, $callable)
+    {
+        $this->registerRoute(self::PUT, $pattern, $callable);
+
+        return $this;
+    }
+
+    public function delete($pattern, $callable)
+    {
+        $this->registerRoute(self::DELETE, $pattern, $callable);
+
+        return $this;
+    }
 
     public function run()
     {
@@ -109,6 +128,6 @@ class App
      */
     private function registerRoute($method, $pattern, $callable)
     {
-        // complete this part
+        $this->routes[] = new Route($method, $pattern, $callable);
     }
 }

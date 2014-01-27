@@ -11,6 +11,7 @@ class TemplateEngine implements TemplateEngineInterface
 
     public function __construct($templateDir)
     {
+        $templateDir = str_replace('\\', DIRECTORY_SEPARATOR, $templateDir);
         $this->templateDir = $templateDir;
     }
 
