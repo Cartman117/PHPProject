@@ -8,4 +8,7 @@ $cache_map = array (
   'TestCase' => '/vagrant/projects/uframework/tests/TestCase.php',
   'Exception\\HttpException' => '/vagrant/projects/uframework/src/Exception/HttpException.php',
   'PHPUnit_Extensions_Story_TestCase' => '/vagrant/projects/uframework/tests/TestCase.php',
+  'Model\\InMemoryFinder' => '/var/www/uframework/src/Model/InMemoryFinder.php',
+  'Model\\FinderInterface' => '/var/www/uframework/src/Model/FinderInterface.php',
+  'Model\\Status' => '/var/www/uframework/src/Model/Status.php',
 );
