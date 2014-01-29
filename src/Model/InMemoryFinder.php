@@ -10,12 +10,9 @@ class InMemoryFinder implements FinderInterface
 
     public function __construct()
     {
-        $status1 = new Status("First status created ever", 0, 0, date("Y-m-d H:i:s"), "Windows Phone");
-        $status2 = new Status("Second status created ever", 1, 0, date("Y-m-d H:i:s"));
-        $status3 = new Status("Another status created by another person", 2, 1, date("Y-m-d H:i:s"), "iOS");
-        array_push($this->statuses, $status1);
-        array_push($this->statuses, $status2);
-        array_push($this->statuses, $status3);
+        $this->statuses[0] = new Status("First status created ever", 0, 'Nico', new \DateTime(), "Windows Phone");
+        $this->statuses[1] = new Status("Second status created ever", 1, 'Nico', new \DateTime());
+        $this->statuses[2] = new Status("Another status created by another person", 2, 'Leo', new \DateTime(), "iOS");
     }
 
     /**
@@ -23,6 +20,7 @@ class InMemoryFinder implements FinderInterface
      */
     public function findAll()
     {
+        var_dump($this->statuses);
         return $this->statuses;
     }
 

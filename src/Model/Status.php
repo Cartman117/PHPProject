@@ -6,15 +6,15 @@ class Status
 {
     private $content;
     private $id;
-    private $userId;
+    private $username;
     private $date;
     private $clientUsed;
 
-    public function __construct($content, $id, $userId, $date, $clientUsed = null)
+    public function __construct($content, $id, $username, $date, $clientUsed = null)
     {
         $this->content      = $content;
         $this->id           = $id;
-        $this->userId       = $userId;
+        $this->username     = $username;
         $this->date         = $date;
         $this->clientUsed   = $clientUsed;
     }
@@ -29,14 +29,14 @@ class Status
         return $this->id;
     }
 
-    public function getUserId()
+    public function getUsername()
     {
-        return $this->userId;
+        return $this->username;
     }
 
     public function getDate()
     {
-        return $this->date;
+        return $this->date->format('Y-m-d H:i:s');;
     }
 
     public function getClientUsed()
@@ -46,6 +46,6 @@ class Status
 
     public function __toString()
     {
-        return '<div class="status">User : ' . $this->userId . '  Date : ' . $this->date . '<br/>' . $this->content . '</div><br/>';
+        return '<div class="status">User : ' . $this->getUsername() . '  Date : ' . $this->getDate() . '<br/>' . $this->getContent() . '</div><br/>';
     }
 }
