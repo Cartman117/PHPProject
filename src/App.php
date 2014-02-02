@@ -4,17 +4,10 @@ use Exception\ExceptionHandler;
 use Exception\HttpException;
 use Routing\Route;
 use View\TemplateEngineInterface;
+use Http\Request;
 
 class App
 {
-    const GET    = 'GET';
-
-    const POST   = 'POST';
-
-    const PUT    = 'PUT';
-
-    const DELETE = 'DELETE';
-
     /**
      * @var array
      */
@@ -66,40 +59,43 @@ class App
      */
     public function get($pattern, $callable)
     {
-        $this->registerRoute(self::GET, $pattern, $callable);
+        $this->registerRoute(Request::GET, $pattern, $callable);
 
         return $this;
     }
 
     public function post($pattern, $callable)
     {
-        $this->registerRoute(self::POST, $pattern, $callable);
+        $this->registerRoute(Request::POST, $pattern, $callable);
 
         return $this;
     }
 
     public function put($pattern, $callable)
     {
-        $this->registerRoute(self::PUT, $pattern, $callable);
+        $this->registerRoute(Request::PUT, $pattern, $callable);
 
         return $this;
     }
 
     public function delete($pattern, $callable)
     {
-        $this->registerRoute(self::DELETE, $pattern, $callable);
+        $this->registerRoute(Request::DELETE, $pattern, $callable);
 
         return $this;
     }
 
-    public function run()
+    public function run(Request $request = null)
     {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : self::GET;
-        $uri    = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
+        if (null === $request) {
+            $request = Request::createFromGlobals();
+        }
+        $method = $request->getMethod();
+        $uri = $request->getUri();
 
         foreach ($this->routes as $route) {
             if ($route->match($method, $uri)) {
-                return $this->process($route);
+                return $this->process($request, $route);
             }
         }
 
@@ -109,11 +105,14 @@ class App
     /**
      * @param Route $route
      */
-    private function process(Route $route)
+    private function process(Request $request, Route $route)
     {
+        $arguments = $route->getArguments();
+        array_unshift($arguments, $request);
         try {
             http_response_code($this->statusCode);
-            echo call_user_func_array($route->getCallable(), $route->getArguments());
+            $response = call_user_func_array($route->getCallable(), $arguments);
+            echo $response;
         } catch (HttpException $e) {
             throw $e;
         } catch (\Exception $e) {
