@@ -53,7 +53,7 @@ $app->post('/statuses', function (Request $request) use ($app, $jsonFile) {
     $content = $request->getParameter('message');
     $memoryFinder->addNewStatus(new Status($content, Status::getNextId($jsonFile), $author, new DateTime()));
 
-    $app->redirect('/statuses', 201);
+    $app->redirect('/statuses');
 });
 
 $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFile) {
@@ -64,7 +64,7 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jso
     }
     $memoryFinder->deleteStatus($status);
 
-    $app->redirect('/statuses', 204);
+    $app->redirect('/statuses');
 });
 
 return $app;
