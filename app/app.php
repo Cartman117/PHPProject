@@ -5,6 +5,7 @@ require __DIR__ . '/../autoload.php';
 use Model\InMemoryFinder;
 use Model\JsonFinder;
 use Model\Status;
+use Http\Request;
 
 // Config
 $debug = true;
@@ -26,14 +27,14 @@ $app->get('/index', function () use ($app) {
     return $app->render('index.php');
 });
 
-$app->get('/statuses', function () use ($app, $jsonFile) {
+$app->get('/statuses', function (Request $request) use ($app, $jsonFile) {
     // $memoryFinder = new InMemoryFinder();
     $memoryFinder = new JsonFinder($jsonFile);
     $statuses = $memoryFinder->findAll();
     return $app->render('statuses.php', array('array' => $statuses));
 });
 
-$app->get('/statuses/(\d+)', function ($id) use ($app, $jsonFile) {
+$app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFile) {
     // $memoryFinder = new InMemoryFinder();
     $memoryFinder = new JsonFinder($jsonFile);
     $status = $memoryFinder->findOneById($id);
