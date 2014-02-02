@@ -10,7 +10,7 @@ class Status
     private $date;
     private $clientUsed;
 
-    public function __construct($content, $id, $username, $date, $clientUsed = null)
+    public function __construct($content, $id, $username, $date, $clientUsed = 'PC')
     {
         $this->content      = $content;
         $this->id           = $id;
@@ -42,6 +42,13 @@ class Status
     public function getClientUsed()
     {
         return $this->clientUsed;
+    }
+
+    public static function getNextId($file)
+    {
+        $finder = new JsonFinder($file);
+
+        return $finder->findNextStatusId();
     }
 
     public function __toString()

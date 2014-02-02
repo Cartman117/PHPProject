@@ -13,6 +13,42 @@ class JsonFinder implements FinderInterface
         $this->jsonFile = $file;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function findAll()
+    {
+        $statuses = json_decode(file_get_contents($this->jsonFile), true);
+        $arrayStatuses = array();
+        foreach ($statuses['statuses'] as $status) {
+            array_push($arrayStatuses, $this->generateStatusFromArray($status));
+        }
+
+        return $arrayStatuses;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findOneById($id)
+    {
+        $statuses = json_decode(file_get_contents($this->jsonFile), true);
+        foreach ($statuses['statuses'] as $status) {
+            if($id == $status['id']) {
+                return $this->generateStatusFromArray($status);
+            }
+        }
+
+        throw new HttpException(404, 'Page not found. False status id.');
+    }
+
+    public function findNextStatusId()
+    {
+        $arrayStatuses = $this->findAll();
+
+        return (end($arrayStatuses) !== false) ? end($arrayStatuses)->getId() + 1 : 0;
+    }
+
     public function addNewStatus(Status $status)
     {
         // Add the status in an array.
@@ -61,34 +97,12 @@ class JsonFinder implements FinderInterface
 
     private function generateStatusFromArray(array $arrayStatus)
     {
-        return new Status($arrayStatus['content'], $arrayStatus['id'], $arrayStatus['username'], new \DateTime($arrayStatus['date']), $arrayStatus['clientUsed']);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findAll()
-    {
-        $statuses = json_decode(file_get_contents($this->jsonFile), true);
-        $arrayStatuses = array();
-        foreach ($statuses['statuses'] as $status) {
-            array_push($arrayStatuses, $this->generateStatusFromArray($status));
-        }
-        return $arrayStatuses;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findOneById($id)
-    {
-        $statuses = json_decode(file_get_contents($this->jsonFile), true);
-        foreach ($statuses['statuses'] as $status) {
-            if($id == $status['id']) {
-                return $this->generateStatusFromArray($status);
-            }
-        }
-
-        throw new HttpException(404, 'Page not found. False status id.');
+        return new Status(
+            $arrayStatus['content'],
+            $arrayStatus['id'],
+            $arrayStatus['username'],
+            new \DateTime($arrayStatus['date']),
+            $arrayStatus['clientUsed']
+        );
     }
 }
