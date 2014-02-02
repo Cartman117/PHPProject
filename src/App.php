@@ -122,7 +122,8 @@ class App
 
     public function redirect($to, $statusCode = 302)
     {
-        http_response_code($statusCode);
+        // For now, with this line, redirect don't works
+        // http_response_code($statusCode);
         header(sprintf('Location: %s', $to));
 
         die;
