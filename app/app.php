@@ -41,7 +41,7 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
     $memoryFinder = new JsonFinder($jsonFile);
     $status = $memoryFinder->findOneById($id);
     if (null === $status) {
-        throw new HttpException(404, 'Page not found. False status id.');
+        throw new HttpException(404, "Object doesn't exist");
     }
 
     return $app->render('status.php', array('item' => $status));
@@ -54,6 +54,17 @@ $app->post('/statuses', function (Request $request) use ($app, $jsonFile) {
     $memoryFinder->addNewStatus(new Status($content, Status::getNextId($jsonFile), $author, new DateTime()));
 
     $app->redirect('/statuses', 201);
+});
+
+$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFile) {
+    $memoryFinder = new JsonFinder($jsonFile);
+    $status = $memoryFinder->findOneById($id);
+    if (null === $status) {
+        throw new HttpException(404, "Object doesn't exist");
+    }
+    $memoryFinder->deleteStatus($status);
+
+    $app->redirect('/statuses', 204);
 });
 
 return $app;
