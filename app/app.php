@@ -6,6 +6,7 @@ use Model\InMemoryFinder;
 use Model\JsonFinder;
 use Model\Status;
 use Http\Request;
+use Exception\HttpException;
 
 // Config
 $debug = true;
@@ -39,6 +40,9 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
     // $memoryFinder = new InMemoryFinder();
     $memoryFinder = new JsonFinder($jsonFile);
     $status = $memoryFinder->findOneById($id);
+    if (null === $status) {
+        throw new HttpException(404, 'Page not found. False status id.');
+    }
 
     return $app->render('status.php', array('item' => $status));
 });

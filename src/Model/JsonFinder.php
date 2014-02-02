@@ -39,7 +39,7 @@ class JsonFinder implements FinderInterface
             }
         }
 
-        throw new HttpException(404, 'Page not found. False status id.');
+        return null;
     }
 
     public function findNextStatusId()
