@@ -42,9 +42,16 @@ $app->get('/statuses', function (Request $request) use ($app, $jsonFile, $serial
     $statuses = $memoryFinder->findAll();
     $format = $request->guessBestFormat();
     if ('html' === $format) {
+
         return $app->render('statuses.php', array('array' => $statuses));
     }
-    $response = new Response($serializer->serialize($statuses, $format));
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/json'));
+    }
+    if ('xml' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/xml'));
+    }
 
     $response->send();
 });
@@ -61,8 +68,13 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
 
         return $app->render('status.php', array('item' => $status));
     }
-    $response = new Response($serializer->serialize($status, $format));
-
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response($serializer->serialize($status, $format), 200, array('Content-Type' => 'application/json'));
+    }
+    if ('xml' === $format) {
+        $response = new Response($serializer->serialize($status, $format), 200, array('Content-Type' => 'application/xml'));
+    }
     $response->send();
 });
 
