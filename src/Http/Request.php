@@ -2,6 +2,8 @@
 
 namespace Http;
 
+use Negotiation\FormatNegotiator;
+
 class Request
 {
     const GET    = 'GET';
@@ -25,7 +27,34 @@ class Request
 
     public static function createFromGlobals()
     {
+        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+            if('application/json' === $_SERVER['HTTP_CONTENT_TYPE']) {
+                $data    = file_get_contents('php://input');
+                $request = @json_decode($data, true);
+
+                return new self($_GET, $request);
+            }
+        }
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            if('application/json' === $_SERVER['CONTENT_TYPE']) {
+                $data    = file_get_contents('php://input');
+                $request = @json_decode($data, true);
+                
+                return new self($_GET, $request);
+            }
+        }
+
         return new self($_GET, $_POST);
+    }
+
+    public function guessBestFormat()
+    {
+        $negotiator = new FormatNegotiator();
+
+        $acceptHeader = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : "text/html";
+        $priorities   = array('html', 'application/json', '*/*');
+
+        return $negotiator->getBestFormat($acceptHeader, $priorities);
     }
 
     public function getMethod()
