@@ -6,6 +6,7 @@ use Model\InMemoryFinder;
 use Model\JsonFinder;
 use Model\Status;
 use Http\Request;
+use Exception\HttpException;
 
 // Config
 $debug = true;
@@ -31,6 +32,7 @@ $app->get('/statuses', function (Request $request) use ($app, $jsonFile) {
     // $memoryFinder = new InMemoryFinder();
     $memoryFinder = new JsonFinder($jsonFile);
     $statuses = $memoryFinder->findAll();
+
     return $app->render('statuses.php', array('array' => $statuses));
 });
 
@@ -38,7 +40,31 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
     // $memoryFinder = new InMemoryFinder();
     $memoryFinder = new JsonFinder($jsonFile);
     $status = $memoryFinder->findOneById($id);
+    if (null === $status) {
+        throw new HttpException(404, "Object doesn't exist");
+    }
+
     return $app->render('status.php', array('item' => $status));
+});
+
+$app->post('/statuses', function (Request $request) use ($app, $jsonFile) {
+    $memoryFinder = new JsonFinder($jsonFile);
+    $author = $request->getParameter('username');
+    $content = $request->getParameter('message');
+    $memoryFinder->addNewStatus(new Status($content, Status::getNextId($jsonFile), $author, new DateTime()));
+
+    $app->redirect('/statuses');
+});
+
+$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFile) {
+    $memoryFinder = new JsonFinder($jsonFile);
+    $status = $memoryFinder->findOneById($id);
+    if (null === $status) {
+        throw new HttpException(404, "Object doesn't exist");
+    }
+    $memoryFinder->deleteStatus($status);
+
+    $app->redirect('/statuses');
 });
 
 return $app;

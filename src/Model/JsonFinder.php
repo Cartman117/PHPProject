@@ -13,6 +13,42 @@ class JsonFinder implements FinderInterface
         $this->jsonFile = $file;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function findAll()
+    {
+        $statuses = json_decode(file_get_contents($this->jsonFile), true);
+        $arrayStatuses = array();
+        foreach ($statuses['statuses'] as $status) {
+            array_push($arrayStatuses, $this->generateStatusFromArray($status));
+        }
+
+        return $arrayStatuses;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findOneById($id)
+    {
+        $statuses = json_decode(file_get_contents($this->jsonFile), true);
+        foreach ($statuses['statuses'] as $status) {
+            if($id == $status['id']) {
+                return $this->generateStatusFromArray($status);
+            }
+        }
+
+        return null;
+    }
+
+    public function findNextStatusId()
+    {
+        $arrayStatuses = $this->findAll();
+
+        return (end($arrayStatuses) !== false) ? end($arrayStatuses)->getId() + 1 : 0;
+    }
+
     public function addNewStatus(Status $status)
     {
         // Add the status in an array.
@@ -35,6 +71,24 @@ class JsonFinder implements FinderInterface
 
         file_put_contents($this->jsonFile, json_encode($arrayStatuses));
 
+    }
+
+    public function deleteStatus(Status $status)
+    {
+        if ('' === file_get_contents($this->jsonFile)) {
+            return null;
+        }
+        $arrayStatuses = json_decode(file_get_contents($this->jsonFile), true);
+        foreach($arrayStatuses['statuses'] as $key => $statusInArray) {
+            if ($statusInArray['id'] == $status->getId()) {
+                unset($arrayStatuses['statuses'][$key]);
+                file_put_contents($this->jsonFile, json_encode($arrayStatuses));
+
+                return;
+            }
+        }
+
+        return null;
     }
 
     private function createStatusArray(Status $status)
@@ -61,34 +115,12 @@ class JsonFinder implements FinderInterface
 
     private function generateStatusFromArray(array $arrayStatus)
     {
-        return new Status($arrayStatus['content'], $arrayStatus['id'], $arrayStatus['username'], new \DateTime($arrayStatus['date']), $arrayStatus['clientUsed']);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findAll()
-    {
-        $statuses = json_decode(file_get_contents($this->jsonFile), true);
-        $arrayStatuses = array();
-        foreach ($statuses['statuses'] as $status) {
-            array_push($arrayStatuses, $this->generateStatusFromArray($status));
-        }
-        return $arrayStatuses;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function findOneById($id)
-    {
-        $statuses = json_decode(file_get_contents($this->jsonFile), true);
-        foreach ($statuses['statuses'] as $status) {
-            if($id == $status['id']) {
-                return $this->generateStatusFromArray($status);
-            }
-        }
-
-        throw new HttpException(404, 'Page not found. False status id.');
+        return new Status(
+            $arrayStatus['content'],
+            $arrayStatus['id'],
+            $arrayStatus['username'],
+            new \DateTime($arrayStatus['date']),
+            $arrayStatus['clientUsed']
+        );
     }
 }

@@ -32,6 +32,7 @@ class InMemoryFinder implements FinderInterface
         if(isset($this->statuses[$id])) {
             return $this->statuses[$id];
         }
-        throw new HttpException(404, 'Page not found. False status id.');
+
+        return null;
     }
 }
