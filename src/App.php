@@ -112,7 +112,7 @@ class App
         array_unshift($arguments, $request);
         try {
             $response = call_user_func_array($route->getCallable(), $arguments);
-            if ($response instanceof Response) {
+            if (!$response instanceof Response) {
                 $response = new Response($response, $this->statusCode);
             }
 
