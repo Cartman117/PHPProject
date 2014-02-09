@@ -4,6 +4,8 @@ require __DIR__ . DIRECTORY_SEPARATOR . '../vendor/autoload.php';
 
 use Model\InMemoryFinder;
 use Model\JsonFinder;
+use Model\Connection;
+use Model\DatabaseFinder;
 use Model\Status;
 use Http\Request;
 use Http\Response;
@@ -21,12 +23,16 @@ $app = new \App(new View\TemplateEngine(
 ), $debug);
 
 $jsonFile = __DIR__ .  DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'statuses.json';
+
 $encoders = array(new XmlEncoder(), new JsonEncoder());
 $normalizers = array(new GetSetMethodNormalizer());
 $serializer = new Serializer($normalizers, $encoders);
 
 // $memoryFinder = new InMemoryFinder();
-$memoryFinder = new JsonFinder($jsonFile);
+//$memoryFinder = new JsonFinder($jsonFile);
+
+$connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
+$memoryFinder = new DatabaseFinder($connection->getConnection());
 
 /**
  * Index
@@ -41,6 +47,7 @@ $app->get('/index', function () use ($app) {
 
 $app->get('/statuses', function (Request $request) use ($app, $memoryFinder, $serializer) {
     $statuses = $memoryFinder->findAll();
+
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
         return $app->render('statuses.php', array('array' => $statuses));
@@ -61,6 +68,7 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $memory
     if (null === $status) {
         throw new HttpException(404, "Object doesn't exist");
     }
+
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
         return $app->render('status.php', array('item' => $status));
@@ -76,10 +84,10 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $memory
     $response->send();
 });
 
-$app->post('/statuses', function (Request $request) use ($app, $memoryFinder, $jsonFile) {
+$app->post('/statuses', function (Request $request) use ($app, $memoryFinder) {
     $author = $request->getParameter('username');
     $content = $request->getParameter('message');
-    $status = new Status($content, Status::getNextId($jsonFile), $author, new DateTime());
+    $status = new Status($content, null, $author, new DateTime());
     $memoryFinder->addNewStatus($status);
 
     $format = $request->guessBestFormat();
@@ -100,6 +108,7 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $mem
         throw new HttpException(404, "Object doesn't exist");
     }
     $memoryFinder->deleteStatus($status);
+
     $format = $request->guessBestFormat();
     if ('json' !== $format) {
         $app->redirect('/statuses');
