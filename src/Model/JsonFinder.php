@@ -34,7 +34,7 @@ class JsonFinder implements FinderInterface
     {
         $statuses = json_decode(file_get_contents($this->jsonFile), true);
         foreach ($statuses['statuses'] as $status) {
-            if($id == $status['id']) {
+            if ($id == $status['id']) {
                 return $this->generateStatusFromArray($status);
             }
         }
@@ -57,8 +57,7 @@ class JsonFinder implements FinderInterface
         // Decode the JSON File in an array.
         if ('' === file_get_contents($this->jsonFile)) {
             $arrayStatuses = array();
-        }
-        else {
+        } else {
             $arrayStatuses = json_decode(file_get_contents($this->jsonFile), true);
         }
 
@@ -79,7 +78,7 @@ class JsonFinder implements FinderInterface
             return null;
         }
         $arrayStatuses = json_decode(file_get_contents($this->jsonFile), true);
-        foreach($arrayStatuses['statuses'] as $key => $statusInArray) {
+        foreach ($arrayStatuses['statuses'] as $key => $statusInArray) {
             if ($statusInArray['id'] == $status->getId()) {
                 unset($arrayStatuses['statuses'][$key]);
                 file_put_contents($this->jsonFile, json_encode($arrayStatuses));
@@ -87,8 +86,6 @@ class JsonFinder implements FinderInterface
                 return;
             }
         }
-
-        return null;
     }
 
     private function createStatusArray(Status $status)
@@ -110,6 +107,7 @@ class JsonFinder implements FinderInterface
                 return true;
             }
         }
+
         return false;
     }
 
