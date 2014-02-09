@@ -2,8 +2,6 @@
 
 namespace Model;
 
-use Exception\HttpException;
-
 class InMemoryFinder implements FinderInterface
 {
     private $statuses = array();
@@ -20,7 +18,6 @@ class InMemoryFinder implements FinderInterface
      */
     public function findAll()
     {
-        var_dump($this->statuses);
         return $this->statuses;
     }
 
@@ -29,7 +26,7 @@ class InMemoryFinder implements FinderInterface
      */
     public function findOneById($id)
     {
-        if(isset($this->statuses[$id])) {
+        if (isset($this->statuses[$id])) {
             return $this->statuses[$id];
         }
 

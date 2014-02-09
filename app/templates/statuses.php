@@ -9,7 +9,7 @@
             <h3>Status list:</h3>
         </div>
         <?php
-            foreach($parameters['array'] as $status) {
+            foreach ($parameters['array'] as $status) {
                 echo $status;
             }
         ?>

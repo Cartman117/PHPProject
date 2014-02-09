@@ -2,8 +2,6 @@
 
 namespace View;
 
-use View\TemplateEngine;
-
 class TemplateEngineTest extends \TestCase
 {
     public function testRender()

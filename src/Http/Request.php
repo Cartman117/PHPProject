@@ -17,7 +17,7 @@ class Request
     private $parameters;
 
     /**
-     * @param array $query $_GET
+     * @param array $query   $_GET
      * @param array $request $_POST
      */
     public function __construct(array $query = array(), array $request = array())
@@ -28,7 +28,7 @@ class Request
     public static function createFromGlobals()
     {
         if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
-            if('application/json' === $_SERVER['HTTP_CONTENT_TYPE']) {
+            if ('application/json' === $_SERVER['HTTP_CONTENT_TYPE']) {
                 $data    = file_get_contents('php://input');
                 $request = @json_decode($data, true);
 
@@ -36,7 +36,7 @@ class Request
             }
         }
         if (isset($_SERVER['CONTENT_TYPE'])) {
-            if('application/json' === $_SERVER['CONTENT_TYPE']) {
+            if ('application/json' === $_SERVER['CONTENT_TYPE']) {
                 $data    = file_get_contents('php://input');
                 $request = @json_decode($data, true);
 
@@ -60,10 +60,10 @@ class Request
     public function getMethod()
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : self::GET;
-        if(self::POST === $method) {
+        if (self::POST === $method) {
             return $this->getParameter('_method', $method);
         }
-        
+
         return $method;
     }
 

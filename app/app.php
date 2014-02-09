@@ -25,7 +25,6 @@ $encoders = array(new XmlEncoder(), new JsonEncoder());
 $normalizers = array(new GetSetMethodNormalizer());
 $serializer = new Serializer($normalizers, $encoders);
 
-
 // $memoryFinder = new InMemoryFinder();
 $memoryFinder = new JsonFinder($jsonFile);
 
