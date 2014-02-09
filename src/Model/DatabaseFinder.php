@@ -61,7 +61,11 @@ class DatabaseFinder implements FinderInterface{
         $preparedQuery->execute($values);
     }
 
-
+    /**
+     * Delete a status.
+     *
+     * @param Status $status The status to delete
+     */
     public function deleteStatus(Status $status)
     {
         $preparedQuery = $this->databaseConnection->prepare("DELETE FROM statuses WHERE id = :id");
