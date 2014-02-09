@@ -3,9 +3,9 @@
 require __DIR__ . DIRECTORY_SEPARATOR . '../vendor/autoload.php';
 
 use Model\InMemoryFinder;
-use Model\JsonFinder;
+use Model\JsonDAO;
 use Model\Connection;
-use Model\DatabaseFinder;
+use Model\StatusQuery;
 use Model\Status;
 use Http\Request;
 use Http\Response;
@@ -29,10 +29,10 @@ $normalizers = array(new GetSetMethodNormalizer());
 $serializer = new Serializer($normalizers, $encoders);
 
 // $memoryFinder = new InMemoryFinder();
-//$memoryFinder = new JsonFinder($jsonFile);
+//$memoryFinder = new JsonDAO($jsonFile);
 
 $connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
-$memoryFinder = new DatabaseFinder($connection->getConnection());
+$memoryFinder = new StatusQuery($connection->getConnection());
 
 /**
  * Index

@@ -2,11 +2,12 @@
 
 namespace Model;
 
-class DatabaseFinder implements FinderInterface{
-
+class StatusQuery implements FinderInterface
+{
     private $databaseConnection;
 
-    public function __construct($databaseConnection){
+    public function __construct($databaseConnection)
+    {
         $this->databaseConnection = $databaseConnection;
     }
     /**
@@ -20,7 +21,7 @@ class DatabaseFinder implements FinderInterface{
         $preparedQuery->execute();
 
         $arrayStatuses = array();
-        foreach($preparedQuery->fetchALL(\PDO::FETCH_ASSOC) as $result){
+        foreach ($preparedQuery->fetchALL(\PDO::FETCH_ASSOC) as $result) {
             array_push($arrayStatuses, new Status($result['content'], $result['id'], $result['username'], new \DateTime($result['date']), $result['clientused']));
         }
 
@@ -30,7 +31,7 @@ class DatabaseFinder implements FinderInterface{
     /**
      * Retrieve an element by its id.
      *
-     * @param  mixed $id
+     * @param  mixed      $id
      * @return null|mixed
      */
     public function findOneById($id)
@@ -47,7 +48,7 @@ class DatabaseFinder implements FinderInterface{
     /**
      * Add a status into the database.
      *
-     * @param Status $status
+     * @param  Status        $status
      * @throws HttpException
      */
     public function addNewStatus(Status $status)

@@ -4,7 +4,7 @@ namespace Model;
 
 use Exception\HttpException;
 
-class JsonFinder implements FinderInterface
+class JsonDAO implements FinderInterface
 {
     private $jsonFile;
 
