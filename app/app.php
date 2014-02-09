@@ -41,8 +41,7 @@ $app->get('/statuses', function (Request $request) use ($app, $jsonFile, $serial
     $memoryFinder = new JsonFinder($jsonFile);
     $statuses = $memoryFinder->findAll();
     $format = $request->guessBestFormat();
-    if ('html' === $format) {
-
+    if ('json' !== $format && 'xml' !== $format) {
         return $app->render('statuses.php', array('array' => $statuses));
     }
     $response = null;
@@ -64,8 +63,7 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
         throw new HttpException(404, "Object doesn't exist");
     }
     $format = $request->guessBestFormat();
-    if ('html' === $format) {
-
+    if ('json' !== $format && 'xml' !== $format) {
         return $app->render('status.php', array('item' => $status));
     }
     $response = null;
@@ -75,6 +73,7 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFi
     if ('xml' === $format) {
         $response = new Response($serializer->serialize($status, $format), 200, array('Content-Type' => 'application/xml'));
     }
+
     $response->send();
 });
 
@@ -82,9 +81,19 @@ $app->post('/statuses', function (Request $request) use ($app, $jsonFile) {
     $memoryFinder = new JsonFinder($jsonFile);
     $author = $request->getParameter('username');
     $content = $request->getParameter('message');
-    $memoryFinder->addNewStatus(new Status($content, Status::getNextId($jsonFile), $author, new DateTime()));
+    $status = new Status($content, Status::getNextId($jsonFile), $author, new DateTime());
+    $memoryFinder->addNewStatus($status);
 
-    $app->redirect('/statuses');
+    $format = $request->guessBestFormat();
+    if ('json' !== $format) {
+        $app->redirect('/statuses');
+    }
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response(json_encode($status), 201, array('Content-Type' => 'application/json'));
+    }
+
+    $response->send();
 });
 
 $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jsonFile) {
@@ -94,8 +103,16 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $jso
         throw new HttpException(404, "Object doesn't exist");
     }
     $memoryFinder->deleteStatus($status);
+    $format = $request->guessBestFormat();
+    if ('json' !== $format) {
+        $app->redirect('/statuses');
+    }
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response("{\"status\": \"Status suppressed\"", 204, array('Content-Type' => 'application/json'));
+    }
 
-    $app->redirect('/statuses');
+    $response->send();
 });
 
 return $app;

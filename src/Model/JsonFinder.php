@@ -87,8 +87,6 @@ class JsonFinder implements FinderInterface
                 return;
             }
         }
-
-        return null;
     }
 
     private function createStatusArray(Status $status)
