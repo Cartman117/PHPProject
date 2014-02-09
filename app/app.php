@@ -3,7 +3,7 @@
 require __DIR__ . DIRECTORY_SEPARATOR . '../vendor/autoload.php';
 
 use Model\InMemoryFinder;
-//use Model\JsonFinder;
+use Model\JsonFinder;
 use Model\Connection;
 use Model\DatabaseFinder;
 use Model\Status;
@@ -23,6 +23,7 @@ $app = new \App(new View\TemplateEngine(
 ), $debug);
 
 $jsonFile = __DIR__ .  DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'statuses.json';
+
 $encoders = array(new XmlEncoder(), new JsonEncoder());
 $normalizers = array(new GetSetMethodNormalizer());
 $serializer = new Serializer($normalizers, $encoders);
