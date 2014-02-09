@@ -21,7 +21,7 @@ class DatabaseFinder implements FinderInterface{
 
         $arrayStatuses = array();
         foreach($preparedQuery->fetchALL(\PDO::FETCH_ASSOC) as $result){
-            array_push($arrayStatuses, new Status($result['content'], $result['id'], $result['username'], $result['date'], $result['clientused']));
+            array_push($arrayStatuses, new Status($result['content'], $result['id'], $result['username'], new \DateTime($result['date']), $result['clientused']));
         }
 
         return $arrayStatuses;
@@ -36,12 +36,12 @@ class DatabaseFinder implements FinderInterface{
     public function findOneById($id)
     {
         $preparedQuery = $this->databaseConnection->prepare("SELECT * FROM statuses WHERE id = :id");
-        $values = array(':id' => $id);
+        $values = [':id' => $id];
 
         $preparedQuery->execute($values);
         $result = $preparedQuery->fetch(\PDO::FETCH_ASSOC);
 
-        return ($result !== null) ? new Status($result['content'], $result['id'], $result['username'], $result['date'], $result['clientused']) : null;
+        return ($result !== false) ? new Status($result['content'], $result['id'], $result['username'], new \DateTime($result['date']), $result['clientused']) : null;
     }
 
     /**
@@ -53,10 +53,10 @@ class DatabaseFinder implements FinderInterface{
     public function addNewStatus(Status $status)
     {
         $preparedQuery = $this->databaseConnection->prepare("INSERT INTO statuses (username, content, date, clientused) VALUES (:username, :content, :date, :clientused)");
-        $values = array(':username' => $status->getUsername(),
+        $values = [':username' => $status->getUsername(),
                     ':content' => $status->getContent(),
                     ':date' => $status->getDate(),
-                    ':clientused' => $status->getClientUsed());
+                    ':clientused' => $status->getClientUsed()];
 
         $preparedQuery->execute($values);
     }
@@ -65,7 +65,7 @@ class DatabaseFinder implements FinderInterface{
     public function deleteStatus(Status $status)
     {
         $preparedQuery = $this->databaseConnection->prepare("DELETE FROM statuses WHERE id = :id");
-        $values = array(':id' => $status->getId());
+        $values = [':id' => $status->getId()];
 
         $preparedQuery->execute($values);
     }
