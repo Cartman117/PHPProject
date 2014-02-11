@@ -48,8 +48,8 @@ $app->get('/index', function () use ($app) {
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
-    $statuses = $statusQuery->findAll();
 
+    $statuses = $statusQuery->findAll(intval($request->getParameter("limit"), 10), $request->getParameter("orderBy"), $request->getParameter("direction"));
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
         return $app->render('statuses.php', array('array' => $statuses));
