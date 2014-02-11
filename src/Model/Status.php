@@ -10,7 +10,7 @@ class Status
     private $date;
     private $clientUsed;
 
-    public function __construct($content, $id, $username, $date, $clientUsed = 'PC')
+    public function __construct($content, $id, $username = 'Anonymous', $date, $clientUsed = 'PC')
     {
         $this->content      = $content;
         $this->id           = $id;
