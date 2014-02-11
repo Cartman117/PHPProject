@@ -24,7 +24,8 @@ class StatusDataMapper
             ':clientused' => $status->getClientUsed(),
         ];
         $this->con->executeQuery($query, $parameters);
-        return;
+
+        return true;
     }
 
     public function remove(Status $status)
