@@ -91,8 +91,11 @@ $app->post('/statuses', function (Request $request) use ($app, $statusDataMapper
     $content = $request->getParameter('message');
     $status = new Status($content, null, $author, new DateTime());
     $return = $statusDataMapper->persist($status);
-    if (null === $return) {
+    if (-1 === $return) {
         throw new HttpException(400, 'Status content too large (140 characters maximum).');
+    }
+    if (-2 === $return) {
+        throw new HttpException(400, 'The content must be filled.');
     }
 
     $format = $request->guessBestFormat();

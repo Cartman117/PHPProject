@@ -10,8 +10,12 @@ class Status
     private $date;
     private $clientUsed;
 
-    public function __construct($content, $id, $username = 'Anonymous', $date, $clientUsed = 'PC')
+    public function __construct($content, $id, $username, $date, $clientUsed = 'PC')
     {
+        if ('' === $username) {
+            $username = 'Anonymous';
+        }
+
         $this->content      = $content;
         $this->id           = $id;
         $this->username     = $username;
