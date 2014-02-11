@@ -7,6 +7,7 @@ use Model\JsonDAO;
 use Model\Connection;
 use Model\StatusQuery;
 use Model\Status;
+use Model\StatusDataMapper;
 use Http\Request;
 use Http\Response;
 use Exception\HttpException;
@@ -29,10 +30,11 @@ $normalizers = array(new GetSetMethodNormalizer());
 $serializer = new Serializer($normalizers, $encoders);
 
 // $memoryFinder = new InMemoryFinder();
-//$memoryFinder = new JsonDAO($jsonFile);
+// $memoryFinder = new JsonDAO($jsonFile);
 
 $connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
-$memoryFinder = new StatusQuery($connection);
+$statusQuery = new StatusQuery($connection);                                                // Rename in DatabaseFinder
+$statusDataMapper = new StatusDataMapper($connection);
 
 /**
  * Index
@@ -45,8 +47,8 @@ $app->get('/index', function () use ($app) {
     return $app->render('index.php');
 });
 
-$app->get('/statuses', function (Request $request) use ($app, $memoryFinder, $serializer) {
-    $statuses = $memoryFinder->findAll();
+$app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
+    $statuses = $statusQuery->findAll();
 
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
@@ -63,8 +65,8 @@ $app->get('/statuses', function (Request $request) use ($app, $memoryFinder, $se
     $response->send();
 });
 
-$app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $memoryFinder, $serializer) {
-    $status = $memoryFinder->findOneById($id);
+$app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $statusQuery, $serializer) {
+    $status = $statusQuery->findOneById($id);
     if (null === $status) {
         throw new HttpException(404, "Object doesn't exist");
     }
@@ -84,11 +86,14 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $memory
     $response->send();
 });
 
-$app->post('/statuses', function (Request $request) use ($app, $memoryFinder) {
+$app->post('/statuses', function (Request $request) use ($app, $statusDataMapper) {
     $author = $request->getParameter('username');
     $content = $request->getParameter('message');
     $status = new Status($content, null, $author, new DateTime());
-    $memoryFinder->addNewStatus($status);
+    $return = $statusDataMapper->persist($status);
+    if (null === $return) {
+        throw new HttpException(400, 'Status content too large (140 characters maximum).');
+    }
 
     $format = $request->guessBestFormat();
     if ('json' !== $format) {
@@ -102,12 +107,12 @@ $app->post('/statuses', function (Request $request) use ($app, $memoryFinder) {
     $response->send();
 });
 
-$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $memoryFinder) {
-    $status = $memoryFinder->findOneById($id);
+$app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $statusQuery, $statusDataMapper) {
+    $status = $statusQuery->findOneById($id);
     if (null === $status) {
         throw new HttpException(404, "Object doesn't exist");
     }
-    $memoryFinder->deleteStatus($status);
+    $statusDataMapper->remove($status);
 
     $format = $request->guessBestFormat();
     if ('json' !== $format) {
