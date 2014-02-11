@@ -32,7 +32,7 @@ $serializer = new Serializer($normalizers, $encoders);
 //$memoryFinder = new JsonDAO($jsonFile);
 
 $connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
-$memoryFinder = new StatusQuery($connection->getConnection());
+$memoryFinder = new StatusQuery($connection);
 
 /**
  * Index
