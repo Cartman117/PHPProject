@@ -15,10 +15,17 @@ class StatusQuery implements FinderInterface
      *
      * @return array
      */
-    public function findAll()
+    public function findAll($limit = null, $orderBy = null)
     {
         $query = "SELECT * FROM statuses";
-
+        if (null !== $orderBy &&
+            null !== $limit) {
+            $query += " ORDER BY :orderBy LIMIT 0, :limit";
+            $parameters = [
+                ':orderBy'  => $orderBy,
+                ':limit'    => $limit,
+            ];
+        }
         $results = $this->connection->executeQuery($query);
         $results = $results->fetchALL(\PDO::FETCH_ASSOC);
 
