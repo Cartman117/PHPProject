@@ -14,7 +14,10 @@ class StatusDataMapper
     public function persist(Status $status)
     {
         if (mb_strlen($status->getContent()) > 140) {
-            return null;    // Status content over 140 characters
+            return -1;    // Status content over 140 characters
+        }
+        if ('' === $status->getContent()) {
+            return -2;
         }
         $query = "INSERT INTO statuses (username, content, date, clientused) VALUES (:username, :content, :date, :clientused)";
         $parameters = [

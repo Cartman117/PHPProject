@@ -48,8 +48,8 @@ $app->get('/index', function () use ($app) {
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
-    $statuses = $statusQuery->findAll();
 
+    $statuses = $statusQuery->findAll(intval($request->getParameter("limit"), 10), $request->getParameter("orderBy"), $request->getParameter("direction"));
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
         return $app->render('statuses.php', array('array' => $statuses));
@@ -91,8 +91,11 @@ $app->post('/statuses', function (Request $request) use ($app, $statusDataMapper
     $content = $request->getParameter('message');
     $status = new Status($content, null, $author, new DateTime());
     $return = $statusDataMapper->persist($status);
-    if (null === $return) {
+    if (-1 === $return) {
         throw new HttpException(400, 'Status content too large (140 characters maximum).');
+    }
+    if (-2 === $return) {
+        throw new HttpException(400, 'The content must be filled.');
     }
 
     $format = $request->guessBestFormat();
