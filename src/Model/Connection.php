@@ -27,8 +27,9 @@ class Connection extends \PDO
         return $preparedQuery;
     }
 
-    private function bind($preparedQuery, $name, $value) {
-        switch($name) {
+    private function bind($preparedQuery, $name, $value)
+    {
+        switch ($name) {
             case ':limit':
                 $preparedQuery->bindValue($name, $value, self::PARAM_INT);
                 break;
