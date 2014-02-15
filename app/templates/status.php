@@ -6,7 +6,8 @@
 </head>
 <body>
     <?php
-        echo $parameters['item'];
+        require_once 'signInLogIn.php';
+        echo '<br/>' . $parameters['item'];
     ?>
     <form action="/statuses/<?= $parameters['item']->getId() ?>" method="POST">
         <input type="hidden" name="_method" value="DELETE">

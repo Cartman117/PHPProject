@@ -8,6 +8,9 @@ use Model\Connection;
 use Model\StatusQuery;
 use Model\Status;
 use Model\StatusDataMapper;
+use Model\User;
+use Model\UserQuery;
+use Model\UserDataMapper;
 use Http\Request;
 use Http\Response;
 use Exception\HttpException;
@@ -33,22 +36,25 @@ $serializer = new Serializer($normalizers, $encoders);
 // $memoryFinder = new JsonDAO($jsonFile);
 
 $connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
-$statusQuery = new StatusQuery($connection);                                                // Rename in DatabaseFinder
+$statusQuery = new StatusQuery($connection);
+$userQuery = new UserQuery($connection);
 $statusDataMapper = new StatusDataMapper($connection);
+$userDataMapper = new UserDataMapper($connection);
 
 /**
  * Index
  */
 $app->get('/', function () use ($app) {
-    return $app->render('index.php');
+    $app->redirect('/statuses');
 });
 
 $app->get('/index', function () use ($app) {
-    return $app->render('index.php');
+    $app->redirect('/');
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
-
+    session_start();
+    $_SESSION['page'] = 'index';
     $statuses = $statusQuery->findAll(intval($request->getParameter("limit"), 10), $request->getParameter("orderBy"), $request->getParameter("direction"));
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
@@ -66,6 +72,8 @@ $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $ser
 });
 
 $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $statusQuery, $serializer) {
+    session_start();
+    $_SESSION['page'] = 'status';
     $status = $statusQuery->findOneById($id);
     if (null === $status) {
         throw new HttpException(404, "Object doesn't exist");
@@ -86,8 +94,37 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $status
     $response->send();
 });
 
+$app->get('/statuses/([a-zA-Z0-9]*)', function (Request $request, $username) use ($app, $statusQuery, $serializer) {
+    session_start();
+    $_SESSION['page'] = 'indexByPeople';
+    if ($username !== $_SESSION['username']) {
+        $app->redirect('/');
+    }
+    $statuses = $statusQuery->findAllByUser($username);
+    $format = $request->guessBestFormat();
+    if ('json' !== $format && 'xml' !== $format) {
+        return $app->render('statuses.php', array('array' => $statuses));
+    }
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/json'));
+    }
+    if ('xml' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/xml'));
+    }
+
+    $response->send();
+});
+
 $app->post('/statuses', function (Request $request) use ($app, $statusDataMapper) {
-    $author = $request->getParameter('username');
+    session_start();
+    $author = null;
+    if (isset($_SESSION['username'])) {
+        $author = $_SESSION['username'];
+    }
+    if (!isset($_SESSION['username'])) {
+        $author = 'Anonymous';
+    }
     $content = $request->getParameter('message');
     $status = new Status($content, null, $author, new DateTime());
     $return = $statusDataMapper->persist($status);
@@ -127,6 +164,48 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $sta
     }
 
     $response->send();
+});
+
+$app->get('/signIn', function () use ($app) {
+    return $app->render('signIn.php');
+});
+
+$app->get('/logIn', function () use ($app) {
+    return $app->render('logIn.php');
+});
+
+$app->get('/logOut', function () use ($app) {
+    session_start();
+    session_destroy();
+
+    return $app->redirect('/');
+});
+
+$app->post('/signIn', function (Request $request) use ($app, $userDataMapper) {
+    $login = $request->getParameter("newLogin");
+    $password = $request->getParameter("newPassword");
+    $user = new User($login, $password);
+    if ($user->isValid()) {
+        $return = $userDataMapper->persist($user);
+        if (-1 === $return) {
+            throw new HttpException(400, 'Username or password fields too large (30 characters maximum).');
+        }
+        return $app->redirect('/');
+    }
+    throw new HttpException(409, "Username already exists or empty fields.");
+
+});
+
+$app->post('/logIn',  function (Request $request) use ($app, $userQuery) {
+    $login = $request->getParameter("login");
+    $password = $request->getParameter("password");
+    if ($userQuery->findByUsernameAndPassword($login, $password)) {
+        session_start();
+        $_SESSION['username'] = $login;
+        session_regenerate_id();
+        return $app->redirect('/');
+    }
+    return $app->render('logIn.php', [ 'username'   => $login]);
 });
 
 return $app;
