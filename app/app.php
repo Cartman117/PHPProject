@@ -92,7 +92,14 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $status
 });
 
 $app->post('/statuses', function (Request $request) use ($app, $statusDataMapper) {
-    $author = $request->getParameter('username');
+    session_start();
+    $author = null;
+    if (isset($_SESSION['username'])) {
+        $author = $_SESSION['username'];
+    }
+    if (!isset($_SESSION['username'])) {
+        $author = 'Anonymous';
+    }
     $content = $request->getParameter('message');
     $status = new Status($content, null, $author, new DateTime());
     $return = $statusDataMapper->persist($status);
