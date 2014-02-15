@@ -51,6 +51,43 @@ class StatusQuery implements FinderInterface
         return $arrayStatuses;
     }
 
+    public function findAllByUser($username, $limit = null, $orderBy = null, $direction = null)
+    {
+        $columns = array(
+            'content',
+            'id',
+            'username',
+            'date',
+            'clientUsed',
+        );
+        $parameters = array();
+        $query = "SELECT * FROM statuses WHERE username = :username";
+        $parameters[':username'] = $username;
+        if (null === $orderBy  ||
+            (null !== $orderBy && !in_array($orderBy, $columns))) {
+            $query .= " ORDER BY id DESC";
+        }
+        if (null !== $orderBy &&
+            in_array($orderBy, $columns)) {
+            $query .= " ORDER BY ". $orderBy;
+            $query .= ('ASC' === $direction) ? " ASC" : " DESC";
+        }
+        if (null !== $limit &&
+            $limit > 0) {
+            $query .= " LIMIT 0, :limit";
+            $parameters[':limit'] = $limit;
+        }
+        $results = $this->connection->executeQuery($query, $parameters);
+        $results = $results->fetchALL(\PDO::FETCH_ASSOC);
+
+        $arrayStatuses = array();
+        foreach ($results as $result) {
+            array_push($arrayStatuses, new Status($result['content'], $result['id'], $result['username'], new \DateTime($result['date']), $result['clientused']));
+        }
+
+        return $arrayStatuses;
+    }
+
     /**
      * Retrieve an element by its id.
      *
