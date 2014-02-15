@@ -3,8 +3,12 @@
 <head>
     <title>Status</title>
     <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 </head>
 <body>
+    <header class="page-header">
+        <h1>Statuses</h1>
+    </header>
     <?php
         require_once 'signInLogIn.php';
         echo '<br/>' . $parameters['item'];
