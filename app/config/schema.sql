@@ -1,3 +1,10 @@
+/*
+If you want to reset your database, just put the two next line in the code.
+
+DROP TABLE IF EXISTS statuses CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+ */
+
 CREATE TABLE IF NOT EXISTS statuses(
   id int NOT NULL AUTO_INCREMENT,
   username VARCHAR(30) NOT NULL,
@@ -10,6 +17,6 @@ CREATE TABLE IF NOT EXISTS statuses(
 CREATE TABLE IF NOT EXISTS users(
   id int NOT NULL AUTO_INCREMENT,
   username VARCHAR(30) NOT NULL,
-  password VARCHAR(30) NOT NULL,
+  password VARCHAR(70) NOT NULL,
   PRIMARY KEY (id)
 )ENGINE=MYISAM CHARACTER SET = utf8;
