@@ -49,11 +49,12 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/index', function () use ($app) {
-    $app->redirect('/statuses');
+    $app->redirect('/');
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
-
+    session_start();
+    $_SESSION['page'] = 'index';
     $statuses = $statusQuery->findAll(intval($request->getParameter("limit"), 10), $request->getParameter("orderBy"), $request->getParameter("direction"));
     $format = $request->guessBestFormat();
     if ('json' !== $format && 'xml' !== $format) {
@@ -71,6 +72,8 @@ $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $ser
 });
 
 $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $statusQuery, $serializer) {
+    session_start();
+    $_SESSION['page'] = 'status';
     $status = $statusQuery->findOneById($id);
     if (null === $status) {
         throw new HttpException(404, "Object doesn't exist");
@@ -86,6 +89,28 @@ $app->get('/statuses/(\d+)', function (Request $request, $id) use ($app, $status
     }
     if ('xml' === $format) {
         $response = new Response($serializer->serialize($status, $format), 200, array('Content-Type' => 'application/xml'));
+    }
+
+    $response->send();
+});
+
+$app->get('/statuses/([a-zA-Z0-9]*)', function (Request $request, $username) use ($app, $statusQuery, $serializer) {
+    session_start();
+    $_SESSION['page'] = 'indexByPeople';
+    if ($username !== $_SESSION['username']) {
+        $app->redirect('/');
+    }
+    $statuses = $statusQuery->findAllByUser($username);
+    $format = $request->guessBestFormat();
+    if ('json' !== $format && 'xml' !== $format) {
+        return $app->render('statuses.php', array('array' => $statuses));
+    }
+    $response = null;
+    if ('json' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/json'));
+    }
+    if ('xml' === $format) {
+        $response = new Response($serializer->serialize($statuses, $format), 200, array('Content-Type' => 'application/xml'));
     }
 
     $response->send();
