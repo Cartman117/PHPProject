@@ -39,12 +39,8 @@ class UserQuery implements FinderInterface
         if (null === $user) {
             return false;
         }
-        return ($this->verifyPassword($password, $user->getPassword())) ? true : false;
-    }
 
-    public function logIn($username, $password)
-    {
-        // Not implemented yet.
+        return $this->verifyPassword($password, $user->getPassword());
     }
 
     private function verifyPassword($password, $passwordHash)
