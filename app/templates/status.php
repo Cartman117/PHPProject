@@ -1,6 +1,3 @@
-<?php
-    session_start();
-?>
 <!DOCTYPE HTML>
 <html lang='en'>
 <head>
@@ -10,7 +7,7 @@
 <body>
     <?php
         require_once 'signInLogIn.php';
-        echo $parameters['item'];
+        echo '<br/>' . $parameters['item'];
     ?>
     <form action="/statuses/<?= $parameters['item']->getId() ?>" method="POST">
         <input type="hidden" name="_method" value="DELETE">
