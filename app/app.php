@@ -8,6 +8,9 @@ use Model\Connection;
 use Model\StatusQuery;
 use Model\Status;
 use Model\StatusDataMapper;
+use Model\User;
+use Model\UserQuery;
+use Model\UserDataMapper;
 use Http\Request;
 use Http\Response;
 use Exception\HttpException;
@@ -33,8 +36,10 @@ $serializer = new Serializer($normalizers, $encoders);
 // $memoryFinder = new JsonDAO($jsonFile);
 
 $connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
-$statusQuery = new StatusQuery($connection);                                                // Rename in DatabaseFinder
+$statusQuery = new StatusQuery($connection);
+$userQuery = new UserQuery($connection);
 $statusDataMapper = new StatusDataMapper($connection);
+$userDataMapper = new UserDataMapper($connection);
 
 /**
  * Index
@@ -127,6 +132,40 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $sta
     }
 
     $response->send();
+});
+
+$app->get('/signIn', function () use ($app) {
+    return $app->render('signIn.php');
+});
+
+$app->get('/logIn', function () use ($app) {
+    return $app->render('logIn.php');
+});
+
+$app->get('/logOut', function () use ($app) {
+    session_destroy();
+
+    return $app->redirect('/');
+});
+
+$app->post('/signIn', function (Request $request) use ($app, $userDataMapper) {
+    $login = $request->getParameter("newLogin");
+    $password = $request->getParameter("newPassword");
+    $user = new User($login, $password);
+    if ($user->isValid()) {
+        $return = $userDataMapper->persist($user);
+        if (-1 === $return) {
+            throw new HttpException(400, 'Username or password fields too large (30 characters maximum).');
+        }
+        return $app->redirect('/');
+    }
+    throw new HttpException(409, "Username already exists or empty fields.");
+
+});
+
+$app->post('/logIn',  function (Request $request) use ($app) {
+    $login = $request->getParameter("login");
+    $password = $request->getParameter("password");
 });
 
 return $app;
