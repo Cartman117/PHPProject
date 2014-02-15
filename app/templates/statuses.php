@@ -5,6 +5,9 @@
         <meta charset="UTF-8"/>
     </head>
     <body>
+    <?php
+        require_once 'signInLogIn.php';
+    ?>
         <div class='statuses'>
             <h3>Status list:</h3>
         </div>

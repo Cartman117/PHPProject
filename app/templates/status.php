@@ -6,6 +6,7 @@
 </head>
 <body>
     <?php
+        require_once 'signInLogIn.php';
         echo $parameters['item'];
     ?>
     <form action="/statuses/<?= $parameters['item']->getId() ?>" method="POST">
