@@ -45,11 +45,11 @@ $userDataMapper = new UserDataMapper($connection);
  * Index
  */
 $app->get('/', function () use ($app) {
-    return $app->render('index.php');
+    $app->redirect('/statuses');
 });
 
 $app->get('/index', function () use ($app) {
-    return $app->render('index.php');
+    $app->redirect('/statuses');
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {
@@ -143,6 +143,7 @@ $app->get('/logIn', function () use ($app) {
 });
 
 $app->get('/logOut', function () use ($app) {
+    session_start();
     session_destroy();
 
     return $app->redirect('/');
@@ -163,9 +164,16 @@ $app->post('/signIn', function (Request $request) use ($app, $userDataMapper) {
 
 });
 
-$app->post('/logIn',  function (Request $request) use ($app) {
+$app->post('/logIn',  function (Request $request) use ($app, $userQuery) {
     $login = $request->getParameter("login");
     $password = $request->getParameter("password");
+    if ($userQuery->findByUsernameAndPassword($login, $password)) {
+        session_start();
+        $_SESSION['username'] = $login;
+        session_regenerate_id();
+        return $app->redirect('/');
+    }
+    return $app->render('logIn.php', [ 'username'   => $login]);
 });
 
 return $app;
