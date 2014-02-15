@@ -2,7 +2,6 @@
 
 namespace Model;
 
-
 class UserQuery implements FinderInterface
 {
     private $connection;
@@ -47,4 +46,4 @@ class UserQuery implements FinderInterface
     {
         return password_verify($password, $passwordHash);
     }
-} 
+}

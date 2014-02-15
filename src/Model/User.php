@@ -28,6 +28,7 @@ class User
         if (strlen(trim($this->getUsername())) !== 0 && strlen(trim($this->getPassword())) !== 0) {
             return $this->verifyAvailability($this->getUsername());
         }
+
         return false;
     }
 
@@ -38,6 +39,7 @@ class User
         if (null !== $user) {
             return false;
         }
+
         return true;
     }
 }

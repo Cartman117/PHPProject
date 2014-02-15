@@ -190,6 +190,7 @@ $app->post('/signIn', function (Request $request) use ($app, $userDataMapper) {
         if (-1 === $return) {
             throw new HttpException(400, 'Username or password fields too large (30 characters maximum).');
         }
+
         return $app->redirect('/');
     }
     throw new HttpException(409, "Username already exists or empty fields.");
@@ -203,8 +204,10 @@ $app->post('/logIn',  function (Request $request) use ($app, $userQuery) {
         session_start();
         $_SESSION['username'] = $login;
         session_regenerate_id();
+
         return $app->redirect('/');
     }
+
     return $app->render('logIn.php', [ 'username'   => $login]);
 });
 

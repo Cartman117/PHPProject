@@ -2,8 +2,8 @@
 
 namespace Model;
 
-
-class UserDataMapper {
+class UserDataMapper
+{
     private $con;
 
     public function __construct(Connection $con)
@@ -48,4 +48,4 @@ class UserDataMapper {
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
-} 
+}

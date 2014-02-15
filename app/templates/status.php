@@ -8,10 +8,14 @@
     <?php
         require_once 'signInLogIn.php';
         echo '<br/>' . $parameters['item'];
+        if (isset($_SESSION['username']) && $_SESSION['username'] === $parameters['item']->getUsername()) {
     ?>
-    <form action="/statuses/<?= $parameters['item']->getId() ?>" method="POST">
-        <input type="hidden" name="_method" value="DELETE">
-        <input type="submit" value="Delete">
-    </form>
+            <form action="/statuses/<?= $parameters['item']->getId() ?>" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="submit" value="Delete">
+            </form>
+    <?php
+        }
+    ?>
 </body>
 </html>

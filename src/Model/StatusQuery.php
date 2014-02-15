@@ -10,6 +10,7 @@ class StatusQuery implements FinderInterface
     {
         $this->connection = $connection;
     }
+
     /**
      * Returns all elements.
      *
