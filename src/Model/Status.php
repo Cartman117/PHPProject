@@ -57,6 +57,11 @@ class Status
 
     public function __toString()
     {
-        return '<div class="status">User : ' . $this->getUsername() . ' (on ' . $this->getClientUsed() . ')<br/>' . $this->getDate() . '<br/><p>' . $this->getContent() . '</p></div>';
+        return '<div class="panel panel-default panel-tweet">
+                    <div class="panel-heading">' . $this->getUsername() . ' (on ' . $this->getClientUsed() . ')</div>
+                    <div class="panel-body">' . $this->getContent() . '<br />
+                        <span class="right">' . $this->getDate() .'</span>
+                    </div>
+                </div>';
     }
 }
