@@ -42,6 +42,8 @@ class StatusQuery implements FinderInterface
             $parameters[':limit'] = $limit;
         }
         $results = $this->connection->executeQuery($query, $parameters);
+        if (null === $results)
+            return null;
         $results = $results->fetchALL(\PDO::FETCH_ASSOC);
 
         $arrayStatuses = array();
@@ -101,6 +103,8 @@ class StatusQuery implements FinderInterface
         $parameters = [':id' => $id];
 
         $result = $this->connection->executeQuery($query, $parameters);
+        if (null === $result)
+            return null;
         $result = $result->fetch(\PDO::FETCH_ASSOC);
 
         return ($result !== false) ? new Status($result['content'], $result['id'], $result['username'], new \DateTime($result['date']), $result['clientused']) : null;
