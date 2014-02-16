@@ -1,0 +1,70 @@
+/**
+ * HEADER
+ */
+html, body{
+    margin: 0;
+}
+.page-header{
+    margin-top: 0;
+    margin-bottom: 0;
+    background-color: #31708F;
+    color: #FFF;
+}
+
+/**
+ * NAVBAR
+ */
+.navbar{
+    border-radius: 0;
+}
+
+/**
+ * CONTAINER
+ */
+.container{
+    width: 1000px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/**
+ * ALERT
+ */
+.alert{
+    margin-bottom: 0;
+}
+
+.input-group textarea.form-control{
+    resize: none;
+}
+
+/**
+ * GENERAL
+ */
+.right{
+    float: right;
+}
+
+.panel{
+    margin-bottom: 0;
+}
+
+.panel-body form{
+    display: inline-block;
+    float: right;
+}
+
+.panel-tweet{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.panel-tweet-more{
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.panel-tweet-more .panel-body{
+    padding: 10px;
+}
