@@ -12,5 +12,8 @@
             <input type="submit" value="Sign in"/>
         </form>
     </div>
+    <form action="/" method="GET">
+        <input type="submit" class="submit" value="Index"/>
+    </form>
 </body>
 </html>

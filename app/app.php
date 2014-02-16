@@ -167,10 +167,18 @@ $app->delete('/statuses/(\d+)', function (Request $request, $id) use ($app, $sta
 });
 
 $app->get('/signIn', function () use ($app) {
+    session_start();
+    if (isset($_SESSION['username'])) {
+        return $app->redirect('/');
+    }
     return $app->render('signIn.php');
 });
 
 $app->get('/logIn', function () use ($app) {
+    session_start();
+    if (isset($_SESSION['username'])) {
+        return $app->redirect('/');
+    }
     return $app->render('logIn.php');
 });
 

@@ -17,13 +17,6 @@
         </form>
 <?php
     }
-    if (!isset($_SESSION['page'])) {
-?>
-        <form action="/" method="GET">
-            <input type="submit" class="submit" value="Index"/>
-        </form>
-<?php
-    }
     if (isset($_SESSION['page'])) {
         switch ($_SESSION['page']) {
             case "index":
@@ -57,11 +50,5 @@
 <?php
                 }
                 break;
-?>
-<form action="/statuses/<?=$_SESSION['username']?>" method="GET">
-    <input type="submit" class="submit" value="List statuses you wrote"/>
-</form>
-
-<?php
         }
     }
