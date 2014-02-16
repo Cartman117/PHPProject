@@ -1,0 +1,4 @@
+Projet réalisé par Nicolas Bascon et Kevin Pignot
+
+Nous avons réalisé toutes les fonctionalités demandés.
+Nous avons juste eu des problèmes avec certains tests, et nous n'avons pas réussi à utilisé la base de donnée sqllite.
