@@ -26,9 +26,8 @@ class StatusDataMapper
             ':date' => $status->getDate(),
             ':clientused' => $status->getClientUsed(),
         ];
-        $this->con->executeQuery($query, $parameters);
 
-        return true;
+        return $this->con->executeQuery($query, $parameters);
     }
 
     public function remove(Status $status)
