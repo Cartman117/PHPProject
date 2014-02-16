@@ -51,7 +51,6 @@
     </div>
 </nav>
 
-
 <?php
     if (isset($_SESSION['username'])) {
 ?>

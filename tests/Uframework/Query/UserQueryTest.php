@@ -3,14 +3,17 @@
 use Model\Connection;
 use Model\UserQuery;
 
-class UserQueryTest extends TestCase {
+class UserQueryTest extends TestCase
+{
     private $connection;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->connection = new Connection("mysql", "uframework", "localhost", "uframework", "passw0rd");
     }
 
-    public function testFindOneByNameNotExisting() {
+    public function testFindOneByNameNotExisting()
+    {
         $name = "uheriurehguiehgerh";
         $userQuery = new \Model\UserQuery($this->connection);
         $this->assertNull($userQuery->findOneByUsername($name));
@@ -18,13 +21,15 @@ class UserQueryTest extends TestCase {
 
     // This tests works with a user Nico with a password nico, you can change this with another couple login/password you create
     /*
-    public function testFindOneByName() {
+    public function testFindOneByName()
+    {
         $name = "Nico";
         $userQuery = new \Model\UserQuery($this->connection);
         $this->assertNotNull($userQuery->findOneByUsername($name));
     }
 
-    public function testFindOneByUsernameAndPassword() {
+    public function testFindOneByUsernameAndPassword()
+    {
         $name = "Nico";
         $password = "nico";
         $userQuery = new \Model\UserQuery($this->connection);
@@ -33,14 +38,16 @@ class UserQueryTest extends TestCase {
 
     // No more tests because we have to fill the database before tests others
     /*
-    public function testFindFirst() {
+    public function testFindFirst()
+    {
         $statusQuery = new StatusQuery($this->connection);
         $this->assertNotNull($statusQuery->findOneById(1));
     }
 
-    public function testFindAll() {
+    public function testFindAll()
+    {
         $statusQuery = new StatusQuery($this->connection);
         $this->assertNotNull($statusQuery->findAll());
     }
     */
-} 
+}

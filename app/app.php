@@ -172,6 +172,7 @@ $app->get('/signIn', function () use ($app) {
     if (isset($_SESSION['username'])) {
         return $app->redirect('/');
     }
+
     return $app->render('signIn.php');
 });
 
@@ -180,6 +181,7 @@ $app->get('/logIn', function () use ($app) {
     if (isset($_SESSION['username'])) {
         return $app->redirect('/');
     }
+
     return $app->render('logIn.php');
 });
 
