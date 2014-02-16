@@ -4,7 +4,7 @@
     <title>Status</title>
     <meta charset="UTF-8"/>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://localhost:8082/css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
     <header class="page-header navbar navbar-static-top">
