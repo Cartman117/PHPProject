@@ -49,7 +49,8 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/index', function () use ($app) {
-    $app->redirect('/');
+
+$app->redirect('/statuses');
 });
 
 $app->get('/statuses', function (Request $request) use ($app, $statusQuery, $serializer) {

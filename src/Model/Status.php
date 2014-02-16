@@ -40,7 +40,7 @@ class Status
 
     public function getDate()
     {
-        return $this->date->format('Y-m-d H:i:s');;
+        return $this->date->format('Y-m-d H:i:s');
     }
 
     public function getClientUsed()
@@ -57,6 +57,11 @@ class Status
 
     public function __toString()
     {
-        return '<div class="status">User : ' . $this->getUsername() . '  Date : ' . $this->getDate() . '<br/>' . $this->getContent() . '</div><br/>';
+        return '<div class="panel panel-default panel-tweet">
+                    <div class="panel-heading">' . $this->getUsername() . ' (on ' . $this->getClientUsed() . ')</div>
+                    <div class="panel-body">' . $this->getContent() . '<br />
+                        <span class="right">' . $this->getDate() .'</span>
+                    </div>
+                </div>';
     }
 }

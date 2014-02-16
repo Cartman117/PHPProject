@@ -1,20 +1,26 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Index</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
 <?php
     if (!isset($_SESSION['username'])) {
 ?>
-        <form action="/signIn" method="GET">
-            <input type="submit" class="submit" value="Sign In"/>
-        </form>
-        <form action="/logIn" method="GET">
-            <input type="submit" class="submit" value="Log In"/>
-        </form>
+        <li>
+            <a href="/signIn">Sign In</a>
+        </li>
+        <li>
+            <a href="/logIn">Log In</a>
+        </li>
 <?php
     }
     if (isset($_SESSION['username'])) {
-        echo $_SESSION['username'] . ' is connected';
 ?>
-        <form action="/logOut" method="GET">
-            <input type="submit" class="submit" value="Log Out"/>
-        </form>
+        <li>
+            <a href="/logOut">Log Out</a>
+        </li>
 <?php
     }
     if (isset($_SESSION['page'])) {
@@ -22,33 +28,37 @@
             case "index":
                 if (isset($_SESSION['username'])) {
 ?>
-                    <form action="/statuses/<?=$_SESSION['username']?>" method="GET">
-                        <input type="submit" class="submit" value="List statuses you wrote"/>
-                    </form>
+                    <li>
+                        <a href="/statuses/<?=$_SESSION['username']?>">List statuses you wrote</a>
+                    </li>
 <?php
                 }
                 break;
-            case "indexByPeople":
-?>
-                <form action="/" method="GET">
-                    <input type="submit" class="submit" value="Index"/>
-                </form>
-<?php
-                break;
             case "status":
-?>
-                <form action="/" method="GET">
-                    <input type="submit" class="submit" value="Index"/>
-                </form>
-<?php
                 if (isset($_SESSION['username'])) {
 ?>
-
-                    <form action="/statuses/<?=$_SESSION['username']?>" method="GET">
-                        <input type="submit" class="submit" value="List statuses you wrote"/>
-                    </form>
+                    <li>
+                        <a href="/statuses/<?=$_SESSION['username']?>">List statuses you wrote</a>
+                    </li>
 <?php
                 }
                 break;
         }
+    }
+?>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<?php
+    if (isset($_SESSION['username'])) {
+?>
+        <div class="container">
+            <div class="alert alert-info">
+                <strong><?=$_SESSION['username']?></strong> is connected
+            </div>
+        </div>
+<?php
     }
