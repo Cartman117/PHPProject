@@ -26,12 +26,11 @@ class UserDataMapper
             ':username' => trim($user->getPassword()),
             ':password' => $passwordHash,
         ];
-        $this->con->executeQuery($query, $parameters);
 
-        return true;
+        return $this->con->executeQuery($query, $parameters);
     }
 
-    // Not possible for the moment
+    // Not used yet
     public function remove(User $user)
     {
         $userQuery = new UserQuery($this->con);
